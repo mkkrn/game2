@@ -8,8 +8,11 @@
   body {
     margin: 0;
     overflow: hidden;
-    background: url('https://i.imgur.com/8QxYQ9M.png') repeat-x;
-    background-size: auto 100%;
+    background:
+      url('https://i.imgur.com/3W5QZ6b.png') repeat-x,
+      linear-gradient(#87CEEB, #87CEEB);
+    background-size: auto 200px, cover;
+    background-position: 0 0, 0 0;
     image-rendering: pixelated;
     font-family: sans-serif;
   }
@@ -40,20 +43,14 @@
     position: absolute;
     bottom: 100px;
     left: 50px;
-    width: 64px;
-    height: 64px;
-    background: url('https://i.imgur.com/V4RclNb.png') no-repeat center/contain;
-    image-rendering: pixelated;
+    font-size: 50px;
   }
 
   .obstacle {
     position: absolute;
     bottom: 100px;
     right: -50px;
-    width: 48px;
-    height: 48px;
-    background: url('https://i.imgur.com/1Xq9BiB.png') no-repeat center/contain;
-    image-rendering: pixelated;
+    font-size: 40px;
   }
 
   #score {
@@ -79,8 +76,8 @@
 <div id="game">
   <div id="score">Score: 0</div>
   <div id="gameOver">ゲームオーバー！クリックでリスタート</div>
-  <div class="horse" id="horse"></div>
-  <div class="obstacle" id="obstacle"></div>
+  <div class="horse" id="horse">🐎</div>
+  <div class="obstacle" id="obstacle">🌵</div>
   <div class="ground"></div>
 </div>
 
@@ -141,7 +138,7 @@ function update() {
   // 当たり判定（ゆるめ）
   const horseRect = horse.getBoundingClientRect();
   const obstacleRect = obstacle.getBoundingClientRect();
-  const padding = 25;
+  const padding = 15;
 
   if (
     horseRect.right - padding > obstacleRect.left &&
