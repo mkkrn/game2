@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -146,8 +145,8 @@ function update() {
   if (gameOver) return;
 
   // 雲スクロール
-  cloudX1 -= speed * 0.3;
-  cloudX2 -= speed * 0.2;
+  cloudX1 += speed * 0.3;
+  cloudX2 += speed * 0.2;
 
   if (cloudX1 < -150) cloudX1 = window.innerWidth;
   if (cloudX2 < -150) cloudX2 = window.innerWidth;
@@ -167,10 +166,10 @@ function update() {
 
   horse.style.bottom = (100 + position) + "px";
 
-  // 障害物移動
-  obstacleX -= speed;
-  if (obstacleX < -50) {
-    obstacleX = window.innerWidth;
+  // 障害物移動（逆向き）
+  obstacleX += speed;
+  if (obstacleX > window.innerWidth) {
+    obstacleX = -50;
     score += 100;
     scoreDisplay.textContent = "Score: " + score;
 
@@ -227,3 +226,4 @@ update();
 </script>
 </body>
 </html>
+
