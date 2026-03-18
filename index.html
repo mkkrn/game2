@@ -127,7 +127,7 @@ let isJumping = false;
 let velocity = 0;
 let gravity = 0.8;
 let position = 0;
-let obstacleX = window.innerWidth;
+let obstacleX = -50;
 let speed = 6;
 let score = 0;
 let gameOver = false;
@@ -148,8 +148,8 @@ function update() {
   cloudX1 += speed * 0.3;
   cloudX2 += speed * 0.2;
 
-  if (cloudX1 < -150) cloudX1 = window.innerWidth;
-  if (cloudX2 < -150) cloudX2 = window.innerWidth;
+  if (cloudX1 > window.innerWidth) cloudX1 = -150;
+  if (cloudX2 > window.innerWidth) cloudX2 = -150;
 
   document.getElementById("cloud1").style.left = cloudX1 + "px";
   document.getElementById("cloud2").style.left = cloudX2 + "px";
@@ -178,6 +178,7 @@ function update() {
       speed += 0.5;
     }
   }
+  }
   obstacle.style.left = obstacleX + "px";
 
   // 当たり判定（ゆるめ）
@@ -203,7 +204,7 @@ function endGame() {
 
 function restart() {
   position = 0;
-  obstacleX = window.innerWidth;
+  obstacleX = -50;
   score = 0;
   speed = 6;
   gameOver = false;
@@ -226,4 +227,3 @@ update();
 </script>
 </body>
 </html>
-
