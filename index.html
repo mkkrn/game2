@@ -107,11 +107,13 @@ function update() {
   obstacleX -= speed;
   if (obstacleX < -50) {
     obstacleX = window.innerWidth;
-    score++;
+    score += 100;
     scoreDisplay.textContent = "Score: " + score;
 
-    // スコアが増えるたびにスピードアップ
-    speed += 0.3;
+    // スコア500ごとにスピードアップ
+    if (score % 500 === 0) {
+      speed += 0.5;
+    }
   }
   obstacle.style.left = obstacleX + "px";
 
