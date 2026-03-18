@@ -13,9 +13,8 @@
     font-family: sans-serif;
   }
 
-  /* 雲（CSSで生成） */
+  /* 雲 */
   .cloud {
-    z-index: 0;
     position: absolute;
     top: 50px;
     width: 120px;
@@ -46,17 +45,14 @@
     top: -30px;
     right: 10px;
   }
-    font-family: sans-serif;
-  }
 
   #game {
     position: relative;
     width: 100vw;
     height: 100vh;
-    background: transparent;
-    z-index: 1;
   }
 
+  /* 地面 */
   .ground {
     position: absolute;
     bottom: 0;
@@ -64,22 +60,23 @@
     height: 100px;
     background: linear-gradient(
       to bottom,
-      #3cb043 0%,   /* 草の表面 */
+      #3cb043 0%,
       #3cb043 30%,
-      #8B5A2B 30%,  /* 土 */
+      #8B5A2B 30%,
       #8B5A2B 100%
     );
-    border-top: 4px solid #2e8b57; /* 草の境界ライン */
-    image-rendering: pixelated;
+    border-top: 4px solid #2e8b57;
   }
 
+  /* 馬（右） */
   .horse {
     position: absolute;
     bottom: 100px;
-    right: 50px; /* ← 右に配置 */
+    right: 50px;
     font-size: 50px;
   }
 
+  /* サボテン（右から出る） */
   .obstacle {
     position: absolute;
     bottom: 100px;
@@ -110,8 +107,10 @@
 <div id="game">
   <div class="cloud" id="cloud1" style="left: 200px;"></div>
   <div class="cloud" id="cloud2" style="left: 500px; top: 100px;"></div>
+
   <div id="score">Score: 0</div>
   <div id="gameOver">ゲームオーバー！クリックでリスタート</div>
+
   <div class="horse" id="horse">🐎</div>
   <div class="obstacle" id="obstacle">🌵</div>
   <div class="ground"></div>
@@ -131,7 +130,6 @@ let obstacleX = -50;
 let speed = 6;
 let score = 0;
 let gameOver = false;
-let bgX = 0;
 let cloudX1 = 200;
 let cloudX2 = 500;
 
@@ -144,18 +142,17 @@ function jump() {
 function update() {
   if (gameOver) return;
 
-  // 雲スクロール
-  cloudX1 += speed * 0.3;
-  cloudX2 += speed * 0.2;
+  // 雲
+  cloudX1 -= speed * 0.3;
+  cloudX2 -= speed * 0.2;
 
-  if (cloudX1 > window.innerWidth) cloudX1 = -150;
-  if (cloudX2 > window.innerWidth) cloudX2 = -150;
+  if (cloudX1 < -150) cloudX1 = window.innerWidth;
+  if (cloudX2 < -150) cloudX2 = window.innerWidth;
 
   document.getElementById("cloud1").style.left = cloudX1 + "px";
   document.getElementById("cloud2").style.left = cloudX2 + "px";
-  document.body.style.backgroundPosition = bgX + "px 0";
 
-  // 馬ジャンプ
+  // ジャンプ
   velocity -= gravity;
   position += velocity;
 
@@ -166,20 +163,20 @@ function update() {
 
   horse.style.bottom = (100 + position) + "px";
 
-  // 障害物移動（逆向き）
+  // サボテン（右 → 左）
   obstacleX += speed;
+
   if (obstacleX > window.innerWidth) {
     obstacleX = -50;
     score += 100;
     scoreDisplay.textContent = "Score: " + score;
 
-    // スコア500ごとにスピードアップ
     if (score % 500 === 0) {
       speed += 0.5;
     }
   }
-  }
-  obstacle.style.left = obstacleX + "px";
+
+  obstacle.style.right = obstacleX + "px";
 
   // 当たり判定（ゆるめ）
   const horseRect = horse.getBoundingClientRect();
@@ -187,8 +184,8 @@ function update() {
   const padding = 25;
 
   if (
-    horseRect.right - padding > obstacleRect.left &&
     horseRect.left + padding < obstacleRect.right &&
+    horseRect.right - padding > obstacleRect.left &&
     horseRect.bottom - padding > obstacleRect.top + padding
   ) {
     endGame();
