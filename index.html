@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -112,14 +113,17 @@ function update() {
   }
   obstacle.style.left = obstacleX + "px";
 
-  // 当たり判定
+  // 当たり判定（少しゆるくする）
   const horseRect = horse.getBoundingClientRect();
   const obstacleRect = obstacle.getBoundingClientRect();
 
+  // 当たり判定を甘くするために余白をつける
+  const padding = 15;
+
   if (
-    horseRect.right > obstacleRect.left &&
-    horseRect.left < obstacleRect.right &&
-    horseRect.bottom > obstacleRect.top
+    horseRect.right - padding > obstacleRect.left &&
+    horseRect.left + padding < obstacleRect.right &&
+    horseRect.bottom - padding > obstacleRect.top + padding
   ) {
     endGame();
   }
