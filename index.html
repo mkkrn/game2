@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -8,12 +9,14 @@
   body {
     margin: 0;
     overflow: hidden;
+    height: 100vh;
     background: linear-gradient(#87CEEB, #bfe9ff);
-    image-rendering: pixelated;
+    font-family: sans-serif;
   }
 
   /* 雲（CSSで生成） */
   .cloud {
+    z-index: 0;
     position: absolute;
     top: 50px;
     width: 120px;
@@ -51,6 +54,8 @@
     position: relative;
     width: 100vw;
     height: 100vh;
+    background: transparent;
+    z-index: 1;
   }
 
   .ground {
@@ -179,7 +184,7 @@ function update() {
   // 当たり判定（ゆるめ）
   const horseRect = horse.getBoundingClientRect();
   const obstacleRect = obstacle.getBoundingClientRect();
-  const padding = 15;
+  const padding = 25;
 
   if (
     horseRect.right - padding > obstacleRect.left &&
