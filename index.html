@@ -9,11 +9,42 @@
     margin: 0;
     overflow: hidden;
     background:
-      url('https://i.imgur.com/3W5QZ6b.png') repeat-x,
       linear-gradient(#87CEEB, #87CEEB);
-    background-size: auto 200px, cover;
-    background-position: 0 0, 0 0;
     image-rendering: pixelated;
+  }
+
+  /* 雲（CSSで生成） */
+  .cloud {
+    position: absolute;
+    top: 50px;
+    width: 120px;
+    height: 60px;
+    background: white;
+    border-radius: 50px;
+    opacity: 0.9;
+  }
+
+  .cloud::before,
+  .cloud::after {
+    content: "";
+    position: absolute;
+    background: white;
+    border-radius: 50%;
+  }
+
+  .cloud::before {
+    width: 60px;
+    height: 60px;
+    top: -20px;
+    left: 10px;
+  }
+
+  .cloud::after {
+    width: 80px;
+    height: 80px;
+    top: -30px;
+    right: 10px;
+  }
     font-family: sans-serif;
   }
 
@@ -74,6 +105,8 @@
 </head>
 <body>
 <div id="game">
+  <div class="cloud" id="cloud1" style="left: 200px;"></div>
+  <div class="cloud" id="cloud2" style="left: 500px; top: 100px;"></div>
   <div id="score">Score: 0</div>
   <div id="gameOver">ゲームオーバー！クリックでリスタート</div>
   <div class="horse" id="horse">🐎</div>
@@ -96,6 +129,8 @@ let speed = 6;
 let score = 0;
 let gameOver = false;
 let bgX = 0;
+let cloudX1 = 200;
+let cloudX2 = 500;
 
 function jump() {
   if (isJumping || gameOver) return;
@@ -106,8 +141,15 @@ function jump() {
 function update() {
   if (gameOver) return;
 
-  // 背景スクロール
-  bgX -= speed / 2;
+  // 雲スクロール
+  cloudX1 -= speed * 0.3;
+  cloudX2 -= speed * 0.2;
+
+  if (cloudX1 < -150) cloudX1 = window.innerWidth;
+  if (cloudX2 < -150) cloudX2 = window.innerWidth;
+
+  document.getElementById("cloud1").style.left = cloudX1 + "px";
+  document.getElementById("cloud2").style.left = cloudX2 + "px";
   document.body.style.backgroundPosition = bgX + "px 0";
 
   // 馬ジャンプ
