@@ -8,9 +8,8 @@
   body {
     margin: 0;
     overflow: hidden;
-    background: url('https://i.imgur.com/8QxYQ9M.png') repeat-x;
-    background-size: auto 100%;
-    image-rendering: pixelated;
+    background: url('https://picsum.photos/1200/600?image=1043') repeat-x;
+    background-size: cover;
     font-family: sans-serif;
   }
 
@@ -127,7 +126,7 @@ function update() {
   // 当たり判定（ゆるめ）
   const horseRect = horse.getBoundingClientRect();
   const obstacleRect = obstacle.getBoundingClientRect();
-  const padding = 30;
+  const padding = 25;
 
   if (
     horseRect.right - padding > obstacleRect.left &&
