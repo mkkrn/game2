@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -110,6 +109,9 @@ function update() {
     obstacleX = window.innerWidth;
     score++;
     scoreDisplay.textContent = "Score: " + score;
+
+    // スコアが増えるたびにスピードアップ
+    speed += 0.3;
   }
   obstacle.style.left = obstacleX + "px";
 
@@ -118,7 +120,7 @@ function update() {
   const obstacleRect = obstacle.getBoundingClientRect();
 
   // 当たり判定を甘くするために余白をつける
-  const padding = 25;
+  const padding = 15;
 
   if (
     horseRect.right - padding > obstacleRect.left &&
