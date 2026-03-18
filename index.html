@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>馬ランゲーム</title>
+<style>
+  body {
+    margin: 0;
+    overflow: hidden;
+    background: #87CEEB;
+    font-family: sans-serif;
+  }
+
+  #game {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+  }
+
+  .ground {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 100px;
+    background: #228B22;
+  }
+
+  .horse {
+    position: absolute;
+    bottom: 100px;
+    left: 50px;
+    font-size: 50px;
+  }
+
+  .obstacle {
+    position: absolute;
+    bottom: 100px;
+    right: -50px;
+    font-size: 40px;
+  }
+
+  #score {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    font-size: 24px;
+    color: white;
+  }
+
+  #gameOver {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 40px;
+    color: red;
+    display: none;
+  }
+</style>
+</head>
+<body>
+<div id="game">
+  <div id="score">Score: 0</div>
+  <div id="gameOver">ゲームオーバー！クリックでリスタート</div>
+  <div class="horse" id="horse">🐎</div>
+  <div class="obstacle" id="obstacle">🌵</div>
+  <div class="ground"></div>
+</div>
+
+<script>
+const horse = document.getElementById("horse");
+const obstacle = document.getElementById("obstacle");
+const scoreDisplay = document.getElementById("score");
+const gameOverText = document.getElementById("gameOver");
+
+let isJumping = false;
+let velocity = 0;
+let gravity = 0.8;
+let position = 0;
+let obstacleX = window.innerWidth;
+let speed = 6;
+let score = 0;
+let gameOver = false;
+
+function jump() {
+  if (isJumping || gameOver) return;
+  isJumping = true;
+  velocity = 15;
+}
+
+function update() {
+  if (gameOver) return;
+
+  // 馬ジャンプ
+  velocity -= gravity;
+  position += velocity;
+
+  if (position <= 0) {
+    position = 0;
+    isJumping = false;
+  }
+
+  horse.style.bottom = (100 + position) + "px";
+
+  // 障害物移動
+  obstacleX -= speed;
+  if (obstacleX < -50) {
+    obstacleX = window.innerWidth;
+    score++;
+    scoreDisplay.textContent = "Score: " + score;
+  }
+  obstacle.style.left = obstacleX + "px";
+
+  // 当たり判定
+  const horseRect = horse.getBoundingClientRect();
+  const obstacleRect = obstacle.getBoundingClientRect();
+
+  if (
+    horseRect.right > obstacleRect.left &&
+    horseRect.left < obstacleRect.right &&
+    horseRect.bottom > obstacleRect.top
+  ) {
+    endGame();
+  }
+
+  requestAnimationFrame(update);
+}
+
+function endGame() {
+  gameOver = true;
+  gameOverText.style.display = "block";
+}
+
+function restart() {
+  position = 0;
+  obstacleX = window.innerWidth;
+  score = 0;
+  gameOver = false;
+  gameOverText.style.display = "none";
+  scoreDisplay.textContent = "Score: 0";
+  update();
+}
+
+// 操作
+document.addEventListener("keydown", jump);
+document.addEventListener("click", () => {
+  if (gameOver) {
+    restart();
+  } else {
+    jump();
+  }
+});
+
+update();
+</script>
+</body>
+</html>
