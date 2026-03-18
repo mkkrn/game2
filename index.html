@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -6,106 +5,112 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>馬ランゲーム</title>
 <style>
-  body {
-    margin: 0;
-    overflow: hidden;
-    height: 100vh;
-    background: linear-gradient(#87CEEB, #bfe9ff);
-    font-family: sans-serif;
-  }
+body {
+  margin: 0;
+  overflow: hidden;
+  height: 100vh;
+  background: linear-gradient(#87CEEB, #bfe9ff);
+  font-family: sans-serif;
+}
 
-  /* 雲（CSSで生成） */
-  .cloud {
-    z-index: 0;
-    position: absolute;
-    top: 50px;
-    width: 120px;
-    height: 60px;
-    background: white;
-    border-radius: 50px;
-    opacity: 0.9;
-  }
+/* 雲（ちゃんと丸い） */
+.cloud {
+  position: absolute;
+  width: 120px;
+  height: 60px;
+  background: white;
+  border-radius: 50px;
+}
 
-  .cloud::before {
-    width: 60px;
-    height: 60px;
-    top: -20px;
-    left: 10px;
-  }
+.cloud::before {
+  content: "";
+  position: absolute;
+  width: 60px;
+  height: 60px;
+  background: white;
+  border-radius: 50%;
+  top: -20px;
+  left: 10px;
+}
 
-  .cloud::after {
-    width: 80px;
-    height: 80px;
-    top: -30px;
-    right: 10px;
-  }
+.cloud::after {
+  content: "";
+  position: absolute;
+  width: 80px;
+  height: 80px;
+  background: white;
+  border-radius: 50%;
+  top: -30px;
+  right: 10px;
+}
 
-  #game {
-    position: relative;
-    width: 100vw;
-    height: 100vh;
-    background: transparent;
-    z-index: 1;
-  }
+#game {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+}
 
-  .ground {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    height: 100px;
-    background: linear-gradient(
-      to bottom,
-      #3cb043 0%,   /* 草の表面 */
-      #3cb043 30%,
-      #8B5A2B 30%,  /* 土 */
-      #8B5A2B 100%
-    );
-    border-top: 4px solid #2e8b57; /* 草の境界ライン */
-    image-rendering: pixelated;
-  }
+/* 地面 */
+.ground {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 100px;
+  background: linear-gradient(
+    to bottom,
+    #3cb043 0%,
+    #3cb043 30%,
+    #8B5A2B 30%,
+    #8B5A2B 100%
+  );
+  border-top: 4px solid #2e8b57;
+}
 
-  .horse {
-    position: absolute;
-    bottom: 100px;
-    right: 50px; /* ← 右に配置 */
-    font-size: 50px;
-  }
+/* 馬（右） */
+.horse {
+  position: absolute;
+  bottom: 100px;
+  right: 50px;
+  font-size: 50px;
+}
 
-  .obstacle {
-    position: absolute;
-    bottom: 100px;
-    right: -50px;
-    font-size: 40px;
-  }
+/* サボテン（左→右） */
+.obstacle {
+  position: absolute;
+  bottom: 100px;
+  left: -50px;
+  font-size: 40px;
+}
 
-  #score {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    font-size: 24px;
-    color: white;
-  }
+#score {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  font-size: 24px;
+  color: white;
+}
 
-  #gameOver {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 24px; /* 小さく */
-    color: #ff4d4d;
-    display: none;
-    font-family: 'Courier New', monospace; /* レトロ風フォント */
-    text-align: center;
-    line-height: 1.4;
-  }
+#gameOver {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 24px;
+  color: red;
+  display: none;
+  font-family: monospace;
+}
 </style>
 </head>
 <body>
+
 <div id="game">
-  <div class="cloud" id="cloud1" style="left: 200px;"></div>
-  <div class="cloud" id="cloud2" style="left: 500px; top: 100px;"></div>
+  <div class="cloud" id="cloud1" style="top:50px; left:200px;"></div>
+  <div class="cloud" id="cloud2" style="top:100px; left:500px;"></div>
+
   <div id="score">Score: 0</div>
   <div id="gameOver">ゲームオーバー！クリックでリスタート</div>
+
   <div class="horse" id="horse">🐎</div>
   <div class="obstacle" id="obstacle">🌵</div>
   <div class="ground"></div>
@@ -121,11 +126,12 @@ let isJumping = false;
 let velocity = 0;
 let gravity = 0.8;
 let position = 0;
+
 let obstacleX = -50;
 let speed = 6;
 let score = 0;
 let gameOver = false;
-let bgX = 0;
+
 let cloudX1 = 200;
 let cloudX2 = 500;
 
@@ -175,24 +181,19 @@ function update() {
   obstacle.style.left = obstacleX + "px";
 
   // 当たり判定
-  const horseRect = horse.getBoundingClientRect();
-  const obstacleRect = obstacle.getBoundingClientRect();
-  const padding = 25;
+  const h = horse.getBoundingClientRect();
+  const o = obstacle.getBoundingClientRect();
 
   if (
-    horseRect.left + padding < obstacleRect.right &&
-    horseRect.right - padding > obstacleRect.left &&
-    horseRect.bottom - padding > obstacleRect.top + padding
+    h.left < o.right &&
+    h.right > o.left &&
+    h.bottom > o.top
   ) {
-    endGame();
+    gameOver = true;
+    gameOverText.style.display = "block";
   }
 
   requestAnimationFrame(update);
-}
-
-function endGame() {
-  gameOver = true;
-  gameOverText.style.display = "block";
 }
 
 function restart() {
@@ -206,17 +207,14 @@ function restart() {
   update();
 }
 
-// 操作
 document.addEventListener("keydown", jump);
 document.addEventListener("click", () => {
-  if (gameOver) {
-    restart();
-  } else {
-    jump();
-  }
+  if (gameOver) restart();
+  else jump();
 });
 
 update();
 </script>
+
 </body>
 </html>
