@@ -8,8 +8,7 @@
   body {
     margin: 0;
     overflow: hidden;
-    background:
-      linear-gradient(#87CEEB, #87CEEB);
+    background: linear-gradient(#87CEEB, #bfe9ff);
     image-rendering: pixelated;
   }
 
@@ -180,7 +179,7 @@ function update() {
   // 当たり判定（ゆるめ）
   const horseRect = horse.getBoundingClientRect();
   const obstacleRect = obstacle.getBoundingClientRect();
-  const padding = 25;
+  const padding = 15;
 
   if (
     horseRect.right - padding > obstacleRect.left &&
