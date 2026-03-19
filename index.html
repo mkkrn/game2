@@ -36,13 +36,11 @@ body {
   font-size: 48px;
   color: #ffe066;
   text-align: center;
-
   text-shadow:
     -4px -4px 0 #66ccff,
      4px -4px 0 #66ccff,
     -4px  4px 0 #66ccff,
      4px  4px 0 #66ccff;
-
   animation: float 2s infinite ease-in-out;
   letter-spacing: 4px;
 }
@@ -53,11 +51,10 @@ body {
   100% { transform: translateY(0); }
 }
 
-/* ⭐ ぷっくりスタートボタン */
+/* ボタン */
 #startButton {
   font-family: 'M PLUS Rounded 1c', sans-serif;
   font-weight: 900;
-
   position: relative;
   padding: 20px 60px;
   font-size: 24px;
@@ -65,17 +62,13 @@ body {
   border: none;
   border-radius: 40px;
   cursor: pointer;
-
   background: linear-gradient(to bottom, #ffd94d, #ff9900);
-
   box-shadow:
     0 8px 0 #cc7a00,
     0 12px 15px rgba(0,0,0,0.2);
-
   text-shadow: 0 2px 0 rgba(0,0,0,0.3);
 }
 
-/* ツヤ */
 #startButton::before {
   content: "";
   position: absolute;
@@ -87,7 +80,6 @@ body {
   border-radius: 30px;
 }
 
-/* キラ */
 #startButton::after {
   content: "";
   position: absolute;
@@ -99,12 +91,10 @@ body {
   border-radius: 50%;
 }
 
-/* ホバー */
 #startButton:hover {
   transform: scale(1.05);
 }
 
-/* 押す */
 #startButton:active {
   transform: translateY(6px);
   box-shadow:
@@ -175,33 +165,35 @@ body {
   font-size: 40px;
 }
 
-/* スコア */
+/* ⭐ スコア（大きく） */
 #score {
   position: absolute;
   top: 10px;
   left: 10px;
-  font-size: 22px;
+  font-size: 28px;
   color: white;
 }
 
-/* ハイスコア */
+/* ⭐ ハイスコア（大きく） */
 #highScore {
   position: absolute;
-  top: 40px;
+  top: 45px;
   left: 10px;
-  font-size: 18px;
+  font-size: 24px;
   color: white;
 }
 
-/* ゲームオーバー */
+/* ⭐ ゲームオーバー（大きく） */
 #gameOver {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  font-size: 20px;
+  font-size: 32px;
   color: white;
   display: none;
+  text-align: center;
+  letter-spacing: 2px;
 }
 </style>
 </head>
@@ -219,7 +211,7 @@ body {
 
   <div id="score">Score: 0</div>
   <div id="highScore">High Score: 0</div>
-  <div id="gameOver">ゲームオーバー！クリックでリスタート</div>
+  <div id="gameOver">ゲームオーバー！<br>クリックでリスタート</div>
 
   <div class="horse" id="horse">🐎</div>
   <div class="obstacle" id="obstacle">🌵</div>
