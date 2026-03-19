@@ -6,9 +6,6 @@
 <title>うまじゃんぷ</title>
 
 <style>
-/* タイトル用フォント（そのまま） */
-@import url('https://fonts.googleapis.com/css2?family=DotGothic16&display=swap');
-/* ボタン用フォント */
 @import url('https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@900&display=swap');
 
 body {
@@ -16,7 +13,8 @@ body {
   overflow: hidden;
   height: 100vh;
   background: linear-gradient(#87CEEB, #bfe9ff);
-  font-family: 'DotGothic16', sans-serif;
+  font-family: 'M PLUS Rounded 1c', sans-serif;
+  font-weight: 900;
 }
 
 /* スタート画面 */
@@ -46,6 +44,7 @@ body {
      4px  4px 0 #66ccff;
 
   animation: float 2s infinite ease-in-out;
+  letter-spacing: 4px;
 }
 
 @keyframes float {
@@ -54,7 +53,7 @@ body {
   100% { transform: translateY(0); }
 }
 
-/* ⭐ ぷっくりボタン（ここだけフォント変更） */
+/* ⭐ ぷっくりスタートボタン */
 #startButton {
   font-family: 'M PLUS Rounded 1c', sans-serif;
   font-weight: 900;
