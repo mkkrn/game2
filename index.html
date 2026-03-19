@@ -6,7 +6,6 @@
 <title>馬ランゲーム</title>
 
 <style>
-/* フォントは必ず一番上！ */
 @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
 
 body {
@@ -14,7 +13,22 @@ body {
   overflow: hidden;
   height: 100vh;
   background: linear-gradient(#87CEEB, #bfe9ff);
-  font-family: sans-serif;
+}
+
+/* スタート画面 */
+#startScreen {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.6);
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  font-family: 'Press Start 2P', monospace;
+  z-index: 10;
+  cursor: pointer;
 }
 
 /* 雲 */
@@ -26,24 +40,24 @@ body {
   border-radius: 50px;
 }
 
-.cloud::before {
+.cloud::before,
+.cloud::after {
   content: "";
   position: absolute;
-  width: 60px;
-  height: 60px;
   background: white;
   border-radius: 50%;
+}
+
+.cloud::before {
+  width: 60px;
+  height: 60px;
   top: -20px;
   left: 10px;
 }
 
 .cloud::after {
-  content: "";
-  position: absolute;
   width: 80px;
   height: 80px;
-  background: white;
-  border-radius: 50%;
   top: -30px;
   right: 10px;
 }
@@ -54,23 +68,15 @@ body {
   height: 100vh;
 }
 
-/* 地面 */
 .ground {
   position: absolute;
   bottom: 0;
   width: 100%;
   height: 100px;
-  background: linear-gradient(
-    to bottom,
-    #3cb043 0%,
-    #3cb043 30%,
-    #8B5A2B 30%,
-    #8B5A2B 100%
-  );
+  background: linear-gradient(#3cb043 30%, #8B5A2B 30%);
   border-top: 4px solid #2e8b57;
 }
 
-/* 馬 */
 .horse {
   position: absolute;
   bottom: 100px;
@@ -78,7 +84,6 @@ body {
   font-size: 50px;
 }
 
-/* サボテン */
 .obstacle {
   position: absolute;
   bottom: 100px;
@@ -86,27 +91,24 @@ body {
   font-size: 40px;
 }
 
-/* スコア */
 #score {
   position: absolute;
   top: 10px;
   left: 10px;
-  font-size: 24px;
   color: white;
+  font-size: 20px;
 }
 
-/* ゲームオーバー（ドット＋縁取り） */
 #gameOver {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  font-size: 18px;
+  font-size: 16px;
   color: white;
   display: none;
   text-align: center;
   font-family: 'Press Start 2P', monospace;
-
   text-shadow:
     -2px -2px 0 #000,
      2px -2px 0 #000,
@@ -117,8 +119,12 @@ body {
 </head>
 
 <body>
-<div id="game">
 
+<div id="startScreen">
+  クリックでスタート
+</div>
+
+<div id="game">
   <div class="cloud" id="cloud1" style="top:50px; left:200px;"></div>
   <div class="cloud" id="cloud2" style="top:100px; left:500px;"></div>
 
@@ -131,10 +137,14 @@ body {
 </div>
 
 <script>
+const startScreen = document.getElementById("startScreen");
 const horse = document.getElementById("horse");
 const obstacle = document.getElementById("obstacle");
 const scoreDisplay = document.getElementById("score");
 const gameOverText = document.getElementById("gameOver");
+
+let gameStarted = false;
+let gameOver = false;
 
 let isJumping = false;
 let velocity = 0;
@@ -144,19 +154,24 @@ let position = 0;
 let obstacleX = -50;
 let speed = 6;
 let score = 0;
-let gameOver = false;
 
 let cloudX1 = 200;
 let cloudX2 = 500;
 
+function startGame() {
+  startScreen.style.display = "none";
+  gameStarted = true;
+  update();
+}
+
 function jump() {
-  if (isJumping || gameOver) return;
+  if (!gameStarted || isJumping || gameOver) return;
   isJumping = true;
   velocity = 15;
 }
 
 function update() {
-  if (gameOver) return;
+  if (!gameStarted || gameOver) return;
 
   // 雲
   cloudX1 += speed * 0.3;
@@ -179,7 +194,7 @@ function update() {
 
   horse.style.bottom = (100 + position) + "px";
 
-  // サボテン（左→右）
+  // サボテン
   obstacleX += speed;
 
   if (obstacleX > window.innerWidth) {
@@ -187,23 +202,16 @@ function update() {
     score += 100;
     scoreDisplay.textContent = "Score: " + score;
 
-    if (score % 500 === 0) {
-      speed += 0.5;
-    }
+    if (score % 500 === 0) speed += 0.5;
   }
 
   obstacle.style.left = obstacleX + "px";
 
-  // 当たり判定（少しゆるめ）
+  // 当たり判定
   const h = horse.getBoundingClientRect();
   const o = obstacle.getBoundingClientRect();
-  const pad = 15;
 
-  if (
-    h.left + pad < o.right &&
-    h.right - pad > o.left &&
-    h.bottom - pad > o.top + pad
-  ) {
+  if (h.left < o.right && h.right > o.left && h.bottom > o.top) {
     gameOver = true;
     gameOverText.style.display = "block";
   }
@@ -212,23 +220,24 @@ function update() {
 }
 
 function restart() {
+  gameOver = false;
   position = 0;
   obstacleX = -50;
   score = 0;
   speed = 6;
-  gameOver = false;
   gameOverText.style.display = "none";
   scoreDisplay.textContent = "Score: 0";
   update();
 }
 
-document.addEventListener("keydown", jump);
+// 操作
 document.addEventListener("click", () => {
-  if (gameOver) restart();
+  if (!gameStarted) startGame();
+  else if (gameOver) restart();
   else jump();
 });
 
-update();
+document.addEventListener("keydown", jump);
 </script>
 
 </body>
