@@ -34,9 +34,8 @@ body {
 /* タイトル */
 #title {
   font-size: 40px;
-  color: #ffe066; /* 黄色 */
+  color: #ffe066;
   text-align: center;
-
   text-shadow:
     -3px -3px 0 #66ccff,
      3px -3px 0 #66ccff,
@@ -44,21 +43,46 @@ body {
      3px  3px 0 #66ccff;
 }
 
-/* スタートボタン */
+/* ⭐ 光沢スタートボタン */
 #startButton {
+  position: relative;
   padding: 15px 30px;
   font-size: 18px;
-  background: #ffe066; /* 黄色 */
+  background: linear-gradient(#fff176, #ffe066);
   color: #333;
-  border: 4px solid #66ccff; /* 水色 */
-  border-radius: 10px;
+  border: 4px solid #66ccff;
+  border-radius: 12px;
   cursor: pointer;
-  transition: 0.2s;
+  transition: 0.15s;
+
+  box-shadow:
+    0 6px 0 #c9b84a,
+    0 8px 10px rgba(0,0,0,0.2);
 }
 
+/* ハイライト */
+#startButton::before {
+  content: "";
+  position: absolute;
+  top: 4px;
+  left: 10%;
+  width: 80%;
+  height: 40%;
+  background: rgba(255,255,255,0.6);
+  border-radius: 10px;
+}
+
+/* ホバー */
 #startButton:hover {
-  transform: scale(1.1);
-  background: #fff176;
+  transform: scale(1.05);
+}
+
+/* 押したとき */
+#startButton:active {
+  transform: translateY(4px);
+  box-shadow:
+    0 2px 0 #c9b84a,
+    0 4px 6px rgba(0,0,0,0.2);
 }
 
 /* 雲 */
@@ -131,7 +155,6 @@ body {
   left: 10px;
   font-size: 22px;
   color: white;
-
   text-shadow:
     -2px -2px 0 #66ccff,
      2px -2px 0 #66ccff,
@@ -149,7 +172,6 @@ body {
   color: white;
   display: none;
   text-align: center;
-
   text-shadow:
     -2px -2px 0 #66ccff,
      2px -2px 0 #66ccff,
@@ -179,7 +201,6 @@ body {
 </div>
 
 <script>
-//（JSはそのままでOK）
 const startScreen = document.getElementById("startScreen");
 const startButton = document.getElementById("startButton");
 const horse = document.getElementById("horse");
