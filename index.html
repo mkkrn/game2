@@ -21,14 +21,47 @@ body {
   width: 100%;
   height: 100%;
   background: rgba(0,0,0,0.6);
-  color: white;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  text-align: center;
+  gap: 40px;
   font-family: 'Press Start 2P', monospace;
   z-index: 10;
+}
+
+/* タイトル */
+#title {
+  font-size: 28px;
+  color: white;
+  text-shadow:
+    -3px -3px 0 #000,
+     3px -3px 0 #000,
+    -3px  3px 0 #000,
+     3px  3px 0 #000;
+}
+
+/* スタートボタン */
+#startButton {
+  padding: 15px 30px;
+  font-size: 14px;
+  color: white;
+  background: #2ecc71;
+  border: 4px solid #000;
   cursor: pointer;
+  font-family: 'Press Start 2P', monospace;
+
+  text-shadow:
+    -2px -2px 0 #000,
+     2px -2px 0 #000,
+    -2px  2px 0 #000,
+     2px  2px 0 #000;
+}
+
+/* ホバー */
+#startButton:hover {
+  background: #27ae60;
+  transform: scale(1.1);
 }
 
 /* 雲 */
@@ -121,7 +154,8 @@ body {
 <body>
 
 <div id="startScreen">
-  クリックでスタート
+  <div id="title">🐎 馬ランゲーム 🐎</div>
+  <button id="startButton">START</button>
 </div>
 
 <div id="game">
@@ -138,6 +172,7 @@ body {
 
 <script>
 const startScreen = document.getElementById("startScreen");
+const startButton = document.getElementById("startButton");
 const horse = document.getElementById("horse");
 const obstacle = document.getElementById("obstacle");
 const scoreDisplay = document.getElementById("score");
@@ -158,11 +193,12 @@ let score = 0;
 let cloudX1 = 200;
 let cloudX2 = 500;
 
-function startGame() {
+/* スタート */
+startButton.onclick = () => {
   startScreen.style.display = "none";
   gameStarted = true;
   update();
-}
+};
 
 function jump() {
   if (!gameStarted || isJumping || gameOver) return;
@@ -173,7 +209,6 @@ function jump() {
 function update() {
   if (!gameStarted || gameOver) return;
 
-  // 雲
   cloudX1 += speed * 0.3;
   cloudX2 += speed * 0.2;
 
@@ -183,7 +218,6 @@ function update() {
   document.getElementById("cloud1").style.left = cloudX1 + "px";
   document.getElementById("cloud2").style.left = cloudX2 + "px";
 
-  // ジャンプ
   velocity -= gravity;
   position += velocity;
 
@@ -194,20 +228,17 @@ function update() {
 
   horse.style.bottom = (100 + position) + "px";
 
-  // サボテン
   obstacleX += speed;
 
   if (obstacleX > window.innerWidth) {
     obstacleX = -50;
     score += 100;
     scoreDisplay.textContent = "Score: " + score;
-
     if (score % 500 === 0) speed += 0.5;
   }
 
   obstacle.style.left = obstacleX + "px";
 
-  // 当たり判定
   const h = horse.getBoundingClientRect();
   const o = obstacle.getBoundingClientRect();
 
@@ -230,10 +261,8 @@ function restart() {
   update();
 }
 
-// 操作
 document.addEventListener("click", () => {
-  if (!gameStarted) startGame();
-  else if (gameOver) restart();
+  if (gameOver) restart();
   else jump();
 });
 
