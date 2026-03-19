@@ -24,35 +24,55 @@ body {
   height: 100%;
   background: rgba(0,0,0,0.4);
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
+  gap: 40px;
   z-index: 10;
 }
 
-/* ⭐ ぷっくりSTARTボタン */
+/* タイトル */
+#title {
+  font-size: 48px;
+  color: #ffe066;
+  text-align: center;
+
+  text-shadow:
+    -4px -4px 0 #66ccff,
+     4px -4px 0 #66ccff,
+    -4px  4px 0 #66ccff,
+     4px  4px 0 #66ccff;
+
+  animation: float 2s infinite ease-in-out;
+}
+
+/* ふわふわ */
+@keyframes float {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0); }
+}
+
+/* ⭐ ぷっくりスタートボタン */
 #startButton {
   position: relative;
   padding: 20px 60px;
-  font-size: 26px;
+  font-size: 24px;
   color: white;
   border: none;
   border-radius: 40px;
   cursor: pointer;
 
-  /* グラデーション */
   background: linear-gradient(to bottom, #ffd94d, #ff9900);
 
-  /* 立体感 */
   box-shadow:
     0 8px 0 #cc7a00,
     0 12px 15px rgba(0,0,0,0.2);
 
-  /* 文字 */
-  text-shadow:
-    0 2px 0 rgba(0,0,0,0.3);
+  text-shadow: 0 2px 0 rgba(0,0,0,0.3);
 }
 
-/* 上のツヤ */
+/* ツヤ */
 #startButton::before {
   content: "";
   position: absolute;
@@ -64,7 +84,7 @@ body {
   border-radius: 30px;
 }
 
-/* 左上のキラ */
+/* キラ */
 #startButton::after {
   content: "";
   position: absolute;
@@ -81,7 +101,7 @@ body {
   transform: scale(1.05);
 }
 
-/* 押したとき */
+/* 押す */
 #startButton:active {
   transform: translateY(6px);
   box-shadow:
@@ -89,7 +109,7 @@ body {
     0 5px 8px rgba(0,0,0,0.2);
 }
 
-/* ゲームエリア */
+/* ゲーム */
 #game {
   position: relative;
   width: 100vw;
@@ -161,6 +181,15 @@ body {
   color: white;
 }
 
+/* ハイスコア */
+#highScore {
+  position: absolute;
+  top: 40px;
+  left: 10px;
+  font-size: 18px;
+  color: white;
+}
+
 /* ゲームオーバー */
 #gameOver {
   position: absolute;
@@ -177,7 +206,8 @@ body {
 <body>
 
 <div id="startScreen">
-  <button id="startButton">START</button>
+  <div id="title">🐎 うまじゃんぷ 🐎</div>
+  <button id="startButton">スタート</button>
 </div>
 
 <div id="game">
@@ -185,6 +215,7 @@ body {
   <div class="cloud" id="cloud2" style="top:100px; left:500px;"></div>
 
   <div id="score">Score: 0</div>
+  <div id="highScore">High Score: 0</div>
   <div id="gameOver">ゲームオーバー！クリックでリスタート</div>
 
   <div class="horse" id="horse">🐎</div>
@@ -198,7 +229,11 @@ const startButton = document.getElementById("startButton");
 const horse = document.getElementById("horse");
 const obstacle = document.getElementById("obstacle");
 const scoreDisplay = document.getElementById("score");
+const highScoreDisplay = document.getElementById("highScore");
 const gameOverText = document.getElementById("gameOver");
+
+let highScore = localStorage.getItem("umaHighScore") || 0;
+highScoreDisplay.textContent = "High Score: " + highScore;
 
 let gameStarted = false;
 let gameOver = false;
@@ -255,6 +290,12 @@ function update() {
     obstacleX = -50;
     score += 100;
     scoreDisplay.textContent = "Score: " + score;
+
+    if (score > highScore) {
+      highScore = score;
+      localStorage.setItem("umaHighScore", highScore);
+      highScoreDisplay.textContent = "High Score: " + highScore;
+    }
   }
 
   obstacle.style.left = obstacleX + "px";
