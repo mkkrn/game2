@@ -24,52 +24,56 @@ body {
   height: 100%;
   background: rgba(0,0,0,0.4);
   display: flex;
-  flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 40px;
   z-index: 10;
 }
 
-/* タイトル */
-#title {
-  font-size: 40px;
-  color: #ffe066;
-  text-align: center;
-  text-shadow:
-    -3px -3px 0 #66ccff,
-     3px -3px 0 #66ccff,
-    -3px  3px 0 #66ccff,
-     3px  3px 0 #66ccff;
-}
-
-/* ⭐ 光沢スタートボタン */
+/* ⭐ ぷっくりSTARTボタン */
 #startButton {
   position: relative;
-  padding: 15px 30px;
-  font-size: 18px;
-  background: linear-gradient(#fff176, #ffe066);
-  color: #333;
-  border: 4px solid #66ccff;
-  border-radius: 12px;
+  padding: 20px 60px;
+  font-size: 26px;
+  color: white;
+  border: none;
+  border-radius: 40px;
   cursor: pointer;
-  transition: 0.15s;
 
+  /* グラデーション */
+  background: linear-gradient(to bottom, #ffd94d, #ff9900);
+
+  /* 立体感 */
   box-shadow:
-    0 6px 0 #c9b84a,
-    0 8px 10px rgba(0,0,0,0.2);
+    0 8px 0 #cc7a00,
+    0 12px 15px rgba(0,0,0,0.2);
+
+  /* 文字 */
+  text-shadow:
+    0 2px 0 rgba(0,0,0,0.3);
 }
 
-/* ハイライト */
+/* 上のツヤ */
 #startButton::before {
   content: "";
   position: absolute;
-  top: 4px;
+  top: 6px;
   left: 10%;
   width: 80%;
   height: 40%;
-  background: rgba(255,255,255,0.6);
-  border-radius: 10px;
+  background: rgba(255,255,255,0.5);
+  border-radius: 30px;
+}
+
+/* 左上のキラ */
+#startButton::after {
+  content: "";
+  position: absolute;
+  top: 8px;
+  left: 20px;
+  width: 15px;
+  height: 15px;
+  background: rgba(255,255,255,0.9);
+  border-radius: 50%;
 }
 
 /* ホバー */
@@ -79,10 +83,17 @@ body {
 
 /* 押したとき */
 #startButton:active {
-  transform: translateY(4px);
+  transform: translateY(6px);
   box-shadow:
-    0 2px 0 #c9b84a,
-    0 4px 6px rgba(0,0,0,0.2);
+    0 2px 0 #cc7a00,
+    0 5px 8px rgba(0,0,0,0.2);
+}
+
+/* ゲームエリア */
+#game {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
 }
 
 /* 雲 */
@@ -116,12 +127,6 @@ body {
   right: 10px;
 }
 
-#game {
-  position: relative;
-  width: 100vw;
-  height: 100vh;
-}
-
 /* 地面 */
 .ground {
   position: absolute;
@@ -129,7 +134,6 @@ body {
   width: 100%;
   height: 100px;
   background: linear-gradient(#3cb043 30%, #8B5A2B 30%);
-  border-top: 4px solid #2e8b57;
 }
 
 /* 馬 */
@@ -155,11 +159,6 @@ body {
   left: 10px;
   font-size: 22px;
   color: white;
-  text-shadow:
-    -2px -2px 0 #66ccff,
-     2px -2px 0 #66ccff,
-    -2px  2px 0 #66ccff,
-     2px  2px 0 #66ccff;
 }
 
 /* ゲームオーバー */
@@ -168,15 +167,9 @@ body {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  font-size: 18px;
+  font-size: 20px;
   color: white;
   display: none;
-  text-align: center;
-  text-shadow:
-    -2px -2px 0 #66ccff,
-     2px -2px 0 #66ccff,
-    -2px  2px 0 #66ccff,
-     2px  2px 0 #66ccff;
 }
 </style>
 </head>
@@ -184,8 +177,7 @@ body {
 <body>
 
 <div id="startScreen">
-  <div id="title">🐎<br>うまじゃんぷ</div>
-  <button id="startButton">スタート</button>
+  <button id="startButton">START</button>
 </div>
 
 <div id="game">
@@ -193,7 +185,7 @@ body {
   <div class="cloud" id="cloud2" style="top:100px; left:500px;"></div>
 
   <div id="score">Score: 0</div>
-  <div id="gameOver">ゲームオーバー！<br>クリックでリスタート</div>
+  <div id="gameOver">ゲームオーバー！クリックでリスタート</div>
 
   <div class="horse" id="horse">🐎</div>
   <div class="obstacle" id="obstacle">🌵</div>
@@ -263,19 +255,17 @@ function update() {
     obstacleX = -50;
     score += 100;
     scoreDisplay.textContent = "Score: " + score;
-    if (score % 500 === 0) speed += 0.5;
   }
 
   obstacle.style.left = obstacleX + "px";
 
   const h = horse.getBoundingClientRect();
   const o = obstacle.getBoundingClientRect();
-  const pad = 15;
 
   if (
-    h.left + pad < o.right &&
-    h.right - pad > o.left &&
-    h.bottom - pad > o.top + pad
+    h.left < o.right &&
+    h.right > o.left &&
+    h.bottom > o.top
   ) {
     gameOver = true;
     gameOverText.style.display = "block";
@@ -289,7 +279,6 @@ function restart() {
   position = 0;
   obstacleX = -50;
   score = 0;
-  speed = 6;
   gameOverText.style.display = "none";
   scoreDisplay.textContent = "Score: 0";
   update();
